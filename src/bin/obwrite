@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+import majik.obfuscate.obwrite
+
+if __name__ == "__main__":
+    majik.obfuscate.obwrite.start()
