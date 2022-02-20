@@ -2,3 +2,7 @@ doc/_build/
 *.swp
 __pycache__/
 dist/
+.python-version
+.tox/
+doc/
+src/lib/majik_obfuscate.egg-info/

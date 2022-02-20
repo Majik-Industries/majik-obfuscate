@@ -39,7 +39,6 @@ import collections
 import enum
 import io
 import logging
-import os
 import struct
 import typing
 
@@ -80,6 +79,7 @@ class Algorithm(enum.IntEnum):
 
 
 class Obfuscate:
+    # pylint: disable=too-many-instance-attributes
     """Class used to create and read obfuscated data.
 
     The values remain encrypted within the class at all times (garbage
@@ -117,13 +117,19 @@ class Obfuscate:
         length = self._data.seek(0, io.SEEK_END)
 
         if length == 0:
-            raise ValueError("You must set the value before you can use it")
+            error = "You must set the value before you can use it"
         elif length < 60:
             # 60 is the minimum encrypted size for a 0 byte data packet
-            raise ValueError("Invalid value to decrypt")
+            error = "Invalid value to decrypt"
+        else:
+            error = None
+
+        if error:
+            raise ValueError(error)
         return length
 
     def parse(self, raw: bytes):
+        """Parse an obfuscated byte array into it's components"""
         self._data.seek(0)
         self._data.truncate()
         self._data.write(raw)
@@ -156,6 +162,7 @@ class Obfuscate:
 
     @property
     def value(self) -> typing.Union[bytes, str]:
+        """Unobfuscated value"""
         cipher = Cryptodome.Cipher.AES.new(
             self._key, Cryptodome.Cipher.AES.MODE_CBC, self._iv
         )
@@ -214,7 +221,7 @@ class Obfuscate:
     @property
     def obfuscated(self) -> bytes:
         """Obfuscated value"""
-        length = self._size_check()
+        self._size_check()
         return self._data.getvalue()
 
     @obfuscated.setter
@@ -222,14 +229,3 @@ class Obfuscate:
         if not isinstance(value, bytes):
             raise ValueError("Obfuscate.obfuscated must be of type 'bytes'")
         self.parse(value)
-
-if __name__ == "__main__":
-    block = "0123456789" * 1000
-    x = Obfuscate()
-    x.value = ""
-    print("Empty: [%s]" % x.value)
-    print("Data size: %d" % len(x.obfuscated))
-    for i in range(64):
-        x.value = block[0:i]
-        print(x.value)
-        print("Data size: %d" % len(x.obfuscated))
