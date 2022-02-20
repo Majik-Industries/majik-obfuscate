@@ -12,7 +12,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Common functions for the CLI programs"""
+"""
+Common functions for the CLI programs
+=====================================
+
+These functions are part of the CLI interface.
+
+"""
 
 import argparse
 import logging.handlers

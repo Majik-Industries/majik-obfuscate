@@ -162,7 +162,12 @@ class Obfuscate:
 
     @property
     def value(self) -> typing.Union[bytes, str]:
-        """Unobfuscated value"""
+        """(bytes or str) Unobfuscated value.
+
+        This is a read/write property.  Assinging a value to this property
+        will create a new obfuscated payload automatically.  Reading this
+        property will decrypt the value at time of use.
+        """
         cipher = Cryptodome.Cipher.AES.new(
             self._key, Cryptodome.Cipher.AES.MODE_CBC, self._iv
         )
@@ -219,7 +224,17 @@ class Obfuscate:
 
     @property
     def obfuscated(self) -> bytes:
-        """Obfuscated value"""
+        """(bytes) Obfuscated value
+
+        This is a read/write property.  Assigning a value will attempt to
+        parse the bytes as an obfuscated value.
+
+        The value read can be written to a file.  It is portable between
+        architectures.
+
+        Raises:
+            ValueError if the data can not be parsed
+        """
         self._size_check()
         return self._data.getvalue()
 
