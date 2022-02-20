@@ -6,34 +6,18 @@ import struct
 import pytest
 
 # Local
+import common
 import majik.obfuscate
 
-
-def random_text(size):
-    output = []
-    while True:
-        block = os.urandom(size * 4)
-        for val in block:
-            if val >= 32 and val < 127:
-                output.append(chr(val))
-            if len(output) == size:
-                break
-        if len(output) == size:
-            break
-
-    return "".join(output)
-
+# Strip 0
+OBO_TEST_SIZES = [x for x in common.TESTSIZES if x > 0]
 
 def test_size_off_by_one():
-    for algorithm in [
-        majik.obfuscate.Algorithm.AES128,
-        majik.obfuscate.Algorithm.AES192,
-        majik.obfuscate.Algorithm.AES256,
-    ]:
+    for algorithm in common.ALGORITHMS:
         ob = majik.obfuscate.Obfuscate(algorithm)
-        for size in [128, 127, 129]:
+        for size in OBO_TEST_SIZES:
             binary = os.urandom(size)
-            text = random_text(size)
+            text = common.random_text(size)
 
             # Test off by one either direction
             for offset in [1, -1]:
@@ -53,15 +37,11 @@ def test_size_off_by_one():
                         ob.value
 
 def test_bad_version():
-    for algorithm in [
-        majik.obfuscate.Algorithm.AES128,
-        majik.obfuscate.Algorithm.AES192,
-        majik.obfuscate.Algorithm.AES256,
-    ]:
+    for algorithm in common.ALGORITHMS:
         ob = majik.obfuscate.Obfuscate(algorithm)
-        for size in [128, 127, 129]:
+        for size in common.TESTSIZES:
             binary = os.urandom(size)
-            text = random_text(size)
+            text = common.random_text(size)
 
             # Test off by one either direction
             for offset in [1, -1]:

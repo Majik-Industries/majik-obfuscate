@@ -6,34 +6,44 @@ import struct
 import pytest
 
 # Local
+import common
 import majik.obfuscate
 
+def test_enums():
+    # Since these are set in stone for the header file,
+    # it's best to test them for the hard coded values.
+    assert majik.obfuscate.Algorithm.AES128.value == 1
+    assert majik.obfuscate.Algorithm.AES192.value == 2
+    assert majik.obfuscate.Algorithm.AES256.value == 3
 
-def random_text(size):
-    output = []
-    while True:
-        block = os.urandom(size * 4)
-        for val in block:
-            if val >= 32 and val < 127:
-                output.append(chr(val))
-            if len(output) == size:
-                break
-        if len(output) == size:
-            break
+    assert majik.obfuscate.DataType.TXT.value == 1
+    assert majik.obfuscate.DataType.BIN.value == 2
 
-    return "".join(output)
+def test_normal_run():
+    for algorithm in common.ALGORITHMS:
+        ob = majik.obfuscate.Obfuscate(algorithm=algorithm)
+        for size in common.TESTSIZES:
+            binval = os.urandom(size)
+            txtval = common.random_text(size)
 
+            # Test binary with parse
+            ob.value = binval
+            ob.parse(ob.obfuscated)
+            assert ob.value == binval
 
-def test_algorithm():
-    # The acutal numerical mappings here are set in stone and cann not be
-    # changed.  These map to actual integers in the file.
+            # Test binary with property asisgnment
+            ob.value = binval
+            x = ob.obfuscated
+            ob.obfuscated = x
+            assert ob.value == binval
 
-    aes128 = majik.obfuscate.Algorithm.AES128
-    aes192 = majik.obfuscate.Algorithm.AES192
-    aes256 = majik.obfuscate.Algorithm.AES256
+            # Test text with parse
+            ob.value = txtval
+            ob.parse(ob.obfuscated)
+            assert ob.value == txtval
 
-    assert aes128.value == 1
-    assert aes192.value == 2
-    assert aes256.value == 3
-
-
+            # Test text with property asisgnment
+            ob.value = txtval
+            x = ob.obfuscated
+            ob.obfuscated = x
+            assert ob.value == txtval

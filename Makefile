@@ -69,5 +69,5 @@ doc:
 clean:
 	rm -rf dist
 	rm -rf doc
-	find src -name __pycache__ -exec rm -rf {} +
+	find . -name __pycache__ -exec rm -rf {} +
 
