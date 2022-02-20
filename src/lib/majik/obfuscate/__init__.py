@@ -140,14 +140,14 @@ class Obfuscate:
         header, self._size = struct.unpack(">IQ", self._data.read(12))
         self._version = (header >> 24) & 0xFF
         if self._version != 1:
-            raise ValueError("Unknown version: %d" % self._version)
+            raise ValueError(f"Unknown version: {self._version}")
 
         self._data_type = DataType((header >> 16) & 0xFF)
         self._algorithm = Algorithm((header >> 8) & 0xFF)
 
         self._info = self.INFO.get(self._algorithm, None)
         if not self._info:
-            raise ValueError("Unimplemented algorithm: %s" % self._algorithm)
+            raise ValueError(f"Unimplemented algorithm: {self._algorithm}")
 
         # With pkcs7 padding length will always be greater than the actual
         # payload size.
@@ -171,8 +171,7 @@ class Obfuscate:
         )
         if len(payload) != self._size:
             raise ValueError(
-                "Size mismatch: expected %d got %d"
-                % (self._size, len(payload))
+                f"Size mismatch: expected {self._size} got {len(payload)}"
             )
         if self._data_type == DataType.TXT:
             payload = payload.decode("utf-8")
@@ -192,7 +191,7 @@ class Obfuscate:
         self._size = len(payload)
         self._info = self.INFO.get(self._algorithm, None)
         if not self._info:
-            raise ValueError("Unimplemented algorithm: %s" % self._algorithm)
+            raise ValueError("Unimplemented algorithm: {self._algorithm}")
 
         self._key = Cryptodome.Random.get_random_bytes(self._info.keysz)
         self._iv = Cryptodome.Random.get_random_bytes(self._info.blocksz)

@@ -1,4 +1,4 @@
-.PHONY: all clean docs dist test
+.PHONY: all clean docs dist test lint
 
 VERSION != python3 scripts/inidump.py setup.cfg metadata version
 NAME != python3 scripts/inidump.py setup.cfg metadata name
@@ -57,6 +57,11 @@ test:
 	env PATH="$${HOME}/.pyenv/bin:$${HOME}/.pyenv/shims:$${PATH}" \
 		PYENV_ROOT="$${HOME}/.pyenv" \
 		tox
+
+lint:
+	env PATH="$${HOME}/.pyenv/bin:$${HOME}/.pyenv/shims:$${PATH}" \
+		PYENV_ROOT="$${HOME}/.pyenv" \
+		tox -e linter
 
 doc:
 	mkdir -p doc

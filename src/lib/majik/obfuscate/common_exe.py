@@ -98,7 +98,8 @@ def start(callback, parse_args):
     try:
         callback(_opts)
     except Exception as err:  # pylint: disable=W0703
-        sys.stderr.write("%s\n" % (textwrap.fill(str(err))))
+        _output = textwrap.fill(str(err))
+        sys.stderr.write(f"{_output}\n")
         if _opts.debug:
             traceback.print_exc()
         sys.exit(1)
