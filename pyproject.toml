@@ -6,9 +6,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "majik-obfuscate"
+dynamic = ["version"]
 description = "Data obfuscation library"
 readme = "README.rst"
-license = "Apache 2.0"
+license = "Apache-2.0"
 authors = [
     { name = "Shawn Michael", email = "python@monkeyspunk.net" },
 ]
@@ -36,9 +37,6 @@ classifiers = [
 dependencies = [
     "pycryptodomex",
 ]
-dynamic = [
-    "version",
-]
 
 [project.scripts]
 obcat = "majik.obfuscate.obcat:start"
@@ -48,11 +46,11 @@ obwrite = "majik.obfuscate.obwrite:start"
 Homepage = "https://oss.majikindustries.com/python/majik-obfuscate/"
 
 [tool.hatch.version]
-path = "find_namespace:/__init__.py"
+path = "src/lib/majik/obfuscate/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = [
-    "src/lib/find_namespace:",
+    "src/lib/majik",
 ]
 
 [tool.hatch.build.targets.sdist]

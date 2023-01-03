@@ -87,6 +87,8 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 CipherInfo = collections.namedtuple("CipherInfo", ["blocksz", "keysz"])
 
+__version__ = "1.0.2"
+
 
 @enum.unique
 class DataType(enum.Enum):

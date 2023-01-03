@@ -1,9 +1,9 @@
 .PHONY: all clean docs dist test lint
 
-VERSION != python3 scripts/inidump.py setup.cfg metadata version
-NAME != python3 scripts/inidump.py setup.cfg metadata name
-PACKAGE != python3 scripts/inidump.py setup.cfg metadata name | tr - _
-AUTHOR != python3 scripts/inidump.py setup.cfg metadata author
+VERSION != hatch version
+NAME != hatchling metadata name
+PACKAGE != hatchling metadata name | tr - _
+AUTHOR != hatchling metadata author
 WHEEL = $(PACKAGE)-$(VERSION)-py3-none-any.whl
 SDIST = $(NAME)-$(VERSION)-tar.gz
 DOCTGZ = $(NAME)-doc-$(VERSION).tar.gz
@@ -19,7 +19,7 @@ docs:  doc/index.rst doc/_build/html/index.html
 
 install: dist/$(WHEEL)
 
-dist: test dist/$(WHEEL) dist/$(DOCTGZ) dist/$(SDIST)
+dist: test dist/$(WHEEL) dist/$(DOCTGZ)
 
 dist/$(DOCTGZ): doc/index.rst doc/_build/html/index.html
 	tar -czf dist/$(DOCTGZ) --transform 's,^.,$(NAME),' -C doc/_build/html .
@@ -27,11 +27,7 @@ dist/$(DOCTGZ): doc/index.rst doc/_build/html/index.html
 
 dist/$(WHEEL): $(DEPS)
 	@echo "Building wheel: $(@)"
-	pip wheel -w dist --use-pep517 --no-deps --isolated .
-
-dist/$(SDIST): $(DEPS)
-	@echo "Building sdist: $(@)"
-	python3 setup.py sdist
+	hatch build
 
 doc/index.rst: doc $(DEPS)
 	cd src/lib ; \
